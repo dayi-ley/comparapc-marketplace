@@ -1,0 +1,6 @@
+{
+  "name": "ComparaPC",
+  "description": "Marketplace y comparador de hardware computacional con ensamblador inteligente.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
