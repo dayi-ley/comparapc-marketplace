@@ -66,29 +66,29 @@ export const CompareModal: React.FC = () => {
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="p-5 sm:p-6 bg-slate-900 text-white flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
+        <div className="px-5 py-3 bg-slate-900 text-white flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
             <img
               src={selectedProductForCompare.imagenUrl}
               alt={selectedProductForCompare.nombre}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover bg-white p-1 border border-slate-700 shrink-0"
+              className="w-12 h-12 rounded-xl object-cover bg-white p-1 border border-slate-700 shrink-0"
             />
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs uppercase font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
                   {selectedProductForCompare.marca}
                 </span>
-                <span className="text-xs text-slate-400">
+                <span className="text-[10px] text-slate-400">
                   Catálogo Oficial ComparaPC
                 </span>
               </div>
-              <h2 className="text-base sm:text-xl font-bold leading-snug">
+              <h2 className="text-sm sm:text-base font-bold leading-tight mt-0.5 line-clamp-1">
                 {selectedProductForCompare.nombre}
               </h2>
-              <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-slate-300">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[11px] text-slate-300">
                 <span>
                   Mejor Precio:{' '}
-                  <strong className="text-emerald-400 text-sm">
+                  <strong className="text-emerald-400 text-xs">
                     {data?.mejorPrecio
                       ? `S/ ${data.mejorPrecio.toFixed(2)}`
                       : 'Consultando...'}
@@ -96,11 +96,11 @@ export const CompareModal: React.FC = () => {
                 </span>
                 <span>•</span>
                 <span>
-                  Tiendas Disponibles: <strong>{data?.totalTiendas || 0}</strong>
+                  Tiendas: <strong>{data?.totalTiendas || 0}</strong>
                 </span>
                 <span>•</span>
                 <span>
-                  Stock en Plaza: <strong>{data?.totalStock || 0} unidades</strong>
+                  Stock: <strong>{data?.totalStock || 0}</strong>
                 </span>
               </div>
             </div>
