@@ -10,19 +10,33 @@ import {
   Search,
   ShoppingCart,
   Cpu,
-  Store as StoreIcon,
-  ShieldCheck,
   Terminal,
   UserCheck,
   ChevronDown,
   LogOut,
+  LogIn,
 } from 'lucide-react';
+
+const NavBtn: React.FC<{
+  active: boolean;
+  onClick: () => void;
+  activeClass?: string;
+  className?: string;
+  children: React.ReactNode;
+}> = ({ active, onClick, activeClass = 'bg-blue-600 text-white', className = '', children }) => (
+  <button
+    onClick={onClick}
+    className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
+      active ? `${activeClass} font-semibold` : `hover:bg-slate-800 hover:text-white ${className}`
+    }`}
+  >
+    {children}
+  </button>
+);
 
 export const Header: React.FC = () => {
   const {
     currentUser,
-    demoUsers,
-    switchUser,
     cerrarSesion,
     activeView,
     setActiveView,
@@ -32,6 +46,7 @@ export const Header: React.FC = () => {
     setSearchFilter,
     setSelectedCategoryFilter,
     setRegisterStoreModalOpen,
+    setLoginModalOpen,
     setCreateProductModalOpen,
     limpiarBaseDatos,
     cargarDatosDemo,
@@ -140,72 +155,26 @@ export const Header: React.FC = () => {
               </button>
 
               {userDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                <div className="absolute right-0 mt-2 w-64 bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2">
                   <div className="px-4 py-2 border-b border-slate-700/80">
                     <p className="text-xs font-semibold text-slate-300">
-                      {currentUser ? 'Cambiar de cuenta:' : 'Iniciar sesion con:'}
+                      {currentUser ? `Sesion activa: ${currentUser.rol.toUpperCase()}` : 'Sin sesion activa'}
                     </p>
-                    <p className="text-[11px] text-slate-400">Elige una cuenta para acceder a sus modulos</p>
+                    <p className="text-[11px] text-slate-400">
+                      {currentUser ? currentUser.email : 'Inicia sesion para ver tus modulos'}
+                    </p>
                   </div>
-                  <div className="max-h-64 overflow-y-auto py-1">
-                    {([
-                      { rol: 'cliente', label: 'Clientes' },
-                      { rol: 'tienda', label: 'Tiendas' },
-                      { rol: 'admin', label: 'Administradores' },
-                    ] as const).map((grupo) => {
-                      const cuentas = demoUsers.filter((u) => u.rol === grupo.rol);
-                      if (cuentas.length === 0) return null;
-                      return (
-                        <div key={grupo.rol}>
-                          <p className="px-4 pt-2 pb-1 text-[10px] uppercase font-bold text-slate-500">
-                            {grupo.label}
-                          </p>
-                          {cuentas.map((u) => {
-                      const isSelected = u.id === currentUser?.id;
-                      return (
-                        <button
-                          key={u.id}
-                          onClick={() => {
-                            switchUser(u);
-                            setUserDropdownOpen(false);
-                          }}
-                          className={`w-full text-left px-4 py-2.5 flex items-start gap-2.5 hover:bg-slate-700/50 transition-colors cursor-pointer ${
-                            isSelected ? 'bg-blue-600/15 border-l-4 border-blue-500' : ''
-                          }`}
-                        >
-                          <div className="mt-0.5">
-                            {u.rol === 'admin' ? (
-                              <ShieldCheck className="w-4 h-4 text-purple-400" />
-                            ) : u.rol === 'tienda' ? (
-                              <StoreIcon className="w-4 h-4 text-amber-400" />
-                            ) : (
-                              <UserCheck className="w-4 h-4 text-emerald-400" />
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-semibold text-white truncate">
-                              {u.nombreCompleto}
-                            </p>
-                            <p className="text-[10px] text-slate-400 truncate">{u.email}</p>
-                            <span
-                              className={`inline-block mt-0.5 text-[9px] uppercase font-bold px-1.5 py-0.2 rounded ${
-                                u.rol === 'admin'
-                                  ? 'bg-purple-900/60 text-purple-300'
-                                  : u.rol === 'tienda'
-                                  ? 'bg-amber-900/60 text-amber-300'
-                                  : 'bg-emerald-900/60 text-emerald-300'
-                              }`}
-                            >
-                              {u.rol.toUpperCase()}
-                              {u.tiendaNombre ? ` • ${u.tiendaNombre}` : ''}
-                            </span>
-                          </div>
-                        </button>
-                          );
-                          })}
-                        </div>
-                      );
-                    })}
+                  <div className="pt-2 px-2">
+                    <button
+                      onClick={() => {
+                        setUserDropdownOpen(false);
+                        setLoginModalOpen(true);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-blue-300 hover:bg-slate-700/60 transition-colors flex items-center gap-2 cursor-pointer"
+                    >
+                      <LogIn className="w-3.5 h-3.5" />
+                      <span>{currentUser ? 'Cambiar de cuenta' : 'Iniciar Sesion'}</span>
+                    </button>
                   </div>
 
                   <div className="pt-2 mt-1 border-t border-slate-700/80 px-2 space-y-1">
@@ -224,16 +193,6 @@ export const Header: React.FC = () => {
 
                     {(currentUser?.rol === 'tienda' || currentUser?.rol === 'admin') && (
                       <>
-                        <button
-                          onClick={() => {
-                            setUserDropdownOpen(false);
-                            setRegisterStoreModalOpen(true);
-                          }}
-                          className="w-full text-left px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-300 hover:bg-slate-700/60 transition-colors flex items-center gap-2 cursor-pointer"
-                        >
-                          <StoreIcon className="w-3.5 h-3.5" />
-                          <span>+ Registrar Tienda</span>
-                        </button>
                         <button
                           onClick={() => {
                             setUserDropdownOpen(false);
@@ -302,86 +261,27 @@ export const Header: React.FC = () => {
         {/* Barra de Navegación de Módulos */}
         <nav className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-center gap-1 overflow-x-auto text-xs font-medium text-slate-300 scrollbar-none">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <button
-              onClick={() => setActiveView('inicio')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'inicio'
-                  ? 'bg-blue-600 text-white font-semibold'
-                  : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              INICIO
-            </button>
-
-            <button
-              onClick={() => setActiveView('catalogo')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'catalogo'
-                  ? 'bg-blue-600 text-white font-semibold'
-                  : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              CATÁLOGO & COMPARADOR
-            </button>
-
-            <button
-              onClick={() => setActiveView('ensamblador')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'ensamblador'
-                  ? 'bg-blue-600 text-white font-semibold'
-                  : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <span>ENSAMBLADOR INTELIGENTE</span>
-            </button>
-
-            <button
-              onClick={() => setActiveView('pedidos')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'pedidos'
-                  ? 'bg-blue-600 text-white font-semibold'
-                  : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              MIS PEDIDOS
-            </button>
-
-            <button
-              onClick={() => setActiveView('pagos')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'pagos'
-                  ? 'bg-blue-600 text-white font-semibold'
-                  : 'hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              PAGOS
-            </button>
-
-            {/* Accesos con RBAC */}
-            {(currentUser?.rol === 'tienda' || currentUser?.rol === 'admin') && (
-              <button
-                onClick={() => setActiveView('tienda')}
-                className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-                  activeView === 'tienda'
-                    ? 'bg-amber-600 text-white font-semibold'
-                    : 'hover:bg-slate-800 text-amber-300'
-                }`}
-              >
-                PANEL TIENDA
-              </button>
-            )}
-
-            {currentUser?.rol === 'admin' && (
-              <button
-                onClick={() => setActiveView('admin')}
-                className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
-                  activeView === 'admin'
-                    ? 'bg-purple-600 text-white font-semibold'
-                    : 'hover:bg-slate-800 text-purple-300'
-                }`}
-              >
-                PANEL ADMIN
-              </button>
+            {(currentUser?.rol === 'tienda') ? (
+              <>
+                <NavBtn active={activeView === 'tienda'} onClick={() => setActiveView('tienda')} activeClass="bg-amber-600 text-white" className="text-amber-300">PANEL TIENDA</NavBtn>
+                <NavBtn active={activeView === 'tienda_inventario'} onClick={() => setActiveView('tienda_inventario')} activeClass="bg-amber-600 text-white" className="text-amber-300">GESTIONAR INVENTARIO</NavBtn>
+                <NavBtn active={activeView === 'tienda_pedidos'} onClick={() => setActiveView('tienda_pedidos')} activeClass="bg-amber-600 text-white" className="text-amber-300">PEDIDOS DE TIENDA</NavBtn>
+                <NavBtn active={activeView === 'mi_cuenta'} onClick={() => setActiveView('mi_cuenta')}>MI CUENTA</NavBtn>
+              </>
+            ) : currentUser?.rol === 'admin' ? (
+              <>
+                <NavBtn active={activeView === 'admin'} onClick={() => setActiveView('admin')} activeClass="bg-purple-600 text-white" className="text-purple-300">PANEL ADMIN</NavBtn>
+                <NavBtn active={activeView === 'mcp_console'} onClick={() => setActiveView('mcp_console')} activeClass="bg-purple-600 text-white" className="text-purple-300">HERRAMIENTAS MCP</NavBtn>
+                <NavBtn active={activeView === 'catalogo'} onClick={() => setActiveView('catalogo')}>CATÁLOGO</NavBtn>
+              </>
+            ) : (
+              <>
+                <NavBtn active={activeView === 'inicio'} onClick={() => setActiveView('inicio')}>INICIO</NavBtn>
+                <NavBtn active={activeView === 'catalogo'} onClick={() => setActiveView('catalogo')}>CATÁLOGO & COMPARADOR</NavBtn>
+                <NavBtn active={activeView === 'ensamblador'} onClick={() => setActiveView('ensamblador')}>ENSAMBLADOR INTELIGENTE</NavBtn>
+                <NavBtn active={activeView === 'pedidos'} onClick={() => setActiveView('pedidos')}>MIS PEDIDOS</NavBtn>
+                <NavBtn active={activeView === 'pagos'} onClick={() => setActiveView('pagos')}>PAGOS</NavBtn>
+              </>
             )}
           </div>
         </nav>

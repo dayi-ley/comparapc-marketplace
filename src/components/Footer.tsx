@@ -5,10 +5,10 @@
 
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Cpu, Terminal, ShieldCheck, Heart } from 'lucide-react';
+import { Cpu, Terminal, ShieldCheck, Heart, Store } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { setActiveView } = useApp();
+  const { setActiveView, setRegisterStoreModalOpen } = useApp();
 
   return (
     <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 text-xs py-10 mt-16">
@@ -95,6 +95,13 @@ export const Footer: React.FC = () => {
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>RUC de 11 dígitos auditado</span>
             </div>
+            <button
+              onClick={() => setRegisterStoreModalOpen(true)}
+              className="mt-2 w-full text-left px-3 py-2 rounded-lg bg-[#56d991] hover:brightness-95 border border-[#3fc47c] transition-colors cursor-pointer flex items-center gap-2 text-slate-950 font-semibold"
+            >
+              <Store className="w-3.5 h-3.5 text-slate-950" />
+              <span>¿Vendes hardware? <strong className="font-black">Sé proveedor</strong></span>
+            </button>
           </div>
         </div>
 

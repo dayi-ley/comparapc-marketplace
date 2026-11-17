@@ -42,7 +42,7 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
 });
 
 app.post('/api/auth/registro', (req: Request, res: Response) => {
-  const { email, password, nombreCompleto, telefono, rol, nombreTienda, ruc, direccion } = req.body;
+  const { email, password, nombreCompleto, telefono, rol, nombreTienda, razonSocial, ruc, dni, direccion, departamento, provincia, distrito } = req.body;
 
   if (dbStore.usuarios.some((u) => u.email.toLowerCase() === email?.toLowerCase())) {
     return res.status(400).json({ error: 'Ya existe una cuenta registrada con este correo.' });
@@ -70,10 +70,13 @@ app.post('/api/auth/registro', (req: Request, res: Response) => {
       usuarioId: nuevoUsuario.id,
       nombreComercial: nombreTienda || 'Nueva Tienda Hardware',
       ruc,
-      razonSocial: nombreTienda + ' S.A.C.',
+      razonSocial: razonSocial || nombreTienda + ' S.A.C.',
+      dniRepresentante: dni || '',
       direccion: direccion || 'Av. Garcilaso de la Vega, Lima',
-      distrito: 'Cercado de Lima',
-      ciudad: 'Lima',
+      distrito: distrito || 'Cercado de Lima',
+      provincia: provincia || 'Lima',
+      departamento: departamento || 'Lima',
+      ciudad: departamento || 'Lima',
       telefono: telefono || '',
       reputacion: 5.0,
       totalVentas: 0,

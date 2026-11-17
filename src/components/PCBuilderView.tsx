@@ -356,7 +356,19 @@ export const PCBuilderView: React.FC = () => {
               </div>
             }
           >
-            <PCBuilder3DCanvas />
+            <PCBuilder3DCanvas
+              onSelectPieza={(key) => setActivePickerSlot(key)}
+              piezasConProducto={
+                new Set(slots.filter((s) => s.product).map((s) => s.key))
+              }
+              onReiniciar={() => setSlots((prev) => prev.map((s) => ({
+                ...s,
+                product: undefined,
+                selectedInventarioId: undefined,
+                selectedStorePrice: undefined,
+                selectedStoreName: undefined,
+              })))}
+            />
           </Suspense>
         </div>
       )}

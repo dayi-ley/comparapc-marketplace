@@ -182,21 +182,29 @@ const Escena: React.FC<{ activa: string | null; colocadas: Set<string> }> = ({ a
   );
 };
 
-export const PCBuilder3DCanvas: React.FC = () => {
-  const [colocadas, setColocadas] = useState<Set<string>>(new Set());
+interface PCBuilder3DCanvasProps {
+  onSelectPieza?: (key: string) => void;
+  piezasConProducto?: Set<string>;
+  onReiniciar?: () => void;
+}
+
+export const PCBuilder3DCanvas: React.FC<PCBuilder3DCanvasProps> = ({ onSelectPieza, piezasConProducto, onReiniciar }) => {
+  const [colocadasInterno, setColocadasInterno] = useState<Set<string>>(new Set());
+  const colocadas = piezasConProducto ?? colocadasInterno;
   const [activa, setActiva] = useState<string | null>(PIEZAS[0].key);
 
   const insertar = () => {
     if (!activa) return;
-    const nuevas = new Set(colocadas).add(activa);
-    setColocadas(nuevas);
+    if (piezasConProducto) { onSelectPieza?.(activa); return; }
+    const nuevas = new Set(colocadasInterno).add(activa);
+    setColocadasInterno(nuevas);
     const siguiente = PIEZAS.find((p) => !nuevas.has(p.key));
     setActiva(siguiente?.key ?? null);
   };
 
-  const reiniciar = () => { setColocadas(new Set()); setActiva(PIEZAS[0].key); };
+  const reiniciar = () => { setColocadasInterno(new Set()); setActiva(PIEZAS[0].key); onReiniciar?.(); };
 
-  const completa = colocadas.size === PIEZAS.length;
+  const completa = PIEZAS.every((p) => colocadas.has(p.key));
   const activaDef = PIEZAS.find((p) => p.key === activa);
 
   return (
@@ -241,7 +249,11 @@ export const PCBuilder3DCanvas: React.FC = () => {
                   key={p.key}
                   type="button"
                   disabled={hecha}
-                  onClick={() => (hecha ? undefined : setActiva(p.key))}
+                  onClick={() => {
+                    if (hecha) return;
+                    setActiva(p.key);
+                    onSelectPieza?.(p.key);
+                  }}
                   className={`px-3.5 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer border ${
                     hecha
                       ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 cursor-default'
@@ -270,7 +282,7 @@ export const PCBuilder3DCanvas: React.FC = () => {
               className="w-full py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-2"
             >
               <Wrench className="w-4 h-4" />
-              Insertar {activaDef?.label ?? 'pieza'}
+              {onSelectPieza ? `Elegir ${activaDef?.label ?? 'pieza'}` : `Insertar ${activaDef?.label ?? 'pieza'}`}
             </button>
           )}
         </div>

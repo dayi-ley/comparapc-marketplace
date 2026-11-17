@@ -15,6 +15,8 @@ export type ActiveView =
   | 'pagos'
   | 'mi_cuenta'
   | 'tienda'
+  | 'tienda_inventario'
+  | 'tienda_pedidos'
   | 'admin'
   | 'mcp_console';
 
@@ -50,6 +52,8 @@ interface AppContextType {
   showToast: (msg: string) => void;
   registerStoreModalOpen: boolean;
   setRegisterStoreModalOpen: (open: boolean) => void;
+  loginModalOpen: boolean;
+  setLoginModalOpen: (open: boolean) => void;
   createProductModalOpen: boolean;
   setCreateProductModalOpen: (open: boolean) => void;
   priceAlertDrawerOpen: boolean;
@@ -79,6 +83,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [registerStoreModalOpen, setRegisterStoreModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [createProductModalOpen, setCreateProductModalOpen] = useState(false);
   const [priceAlertDrawerOpen, setPriceAlertDrawerOpen] = useState(false);
   const [selectedProductForAlert, setSelectedProductForAlert] = useState<Product | null>(null);
@@ -266,6 +271,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         showToast,
         registerStoreModalOpen,
         setRegisterStoreModalOpen,
+        loginModalOpen,
+        setLoginModalOpen,
         createProductModalOpen,
         setCreateProductModalOpen,
         priceAlertDrawerOpen,

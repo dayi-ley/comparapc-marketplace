@@ -26,7 +26,7 @@ import {
   PlusCircle,
 } from 'lucide-react';
 
-export const StoreDashboardView: React.FC = () => {
+export const StoreDashboardView: React.FC<{ seccion?: 'resumen' | 'inventario' | 'pedidos' }> = ({ seccion = 'resumen' }) => {
   const { currentUser, showToast, setRegisterStoreModalOpen, setCreateProductModalOpen } = useApp();
   const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -238,6 +238,7 @@ export const StoreDashboardView: React.FC = () => {
       </div>
 
       {/* METRICAS DEL DASHBOARD */}
+      {seccion === 'resumen' && (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2">
@@ -279,8 +280,10 @@ export const StoreDashboardView: React.FC = () => {
           </span>
         </div>
       </div>
+      )}
 
       {/* GESTIÓN DE INVENTARIO Y PRECIOS */}
+      {(seccion === 'resumen' || seccion === 'inventario') && (
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -439,8 +442,10 @@ export const StoreDashboardView: React.FC = () => {
           </div>
         )}
       </div>
+      )}
 
       {/* PEDIDOS RECIBIDOS POR ESTA TIENDA */}
+      {(seccion === 'resumen' || seccion === 'pedidos') && (
       <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-5 border-b border-slate-200">
           <h3 className="font-bold text-slate-900 text-base">
@@ -503,6 +508,7 @@ export const StoreDashboardView: React.FC = () => {
           </div>
         )}
       </div>
+      )}
 
       {/* MODAL PARA PUBLICAR EN INVENTARIO */}
       {addInventoryModalOpen && (

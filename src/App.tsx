@@ -23,6 +23,7 @@ import { RegisterStoreModal } from './components/RegisterStoreModal';
 import { CreateProductModal } from './components/CreateProductModal';
 import { PriceAlertEdgeWidget } from './components/PriceAlertEdgeWidget';
 import { Footer } from './components/Footer';
+import { LoginModal } from './components/LoginModal';
 
 const AppContent: React.FC = () => {
   const { activeView, toastMessage } = useApp();
@@ -31,7 +32,7 @@ const AppContent: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
       {/* Toast Banner */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 animate-in slide-in-from-top-4 flex items-center gap-2">
+        <div className="fixed top-20 right-6 z-[100] bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 animate-in slide-in-from-top-4 flex items-center gap-2">
           <span>{toastMessage}</span>
         </div>
       )}
@@ -47,7 +48,9 @@ const AppContent: React.FC = () => {
         {activeView === 'pedidos' && <OrdersView />}
         {activeView === 'pagos' && <PagosView />}
         {activeView === 'mi_cuenta' && <MyAccountView />}
-        {activeView === 'tienda' && <StoreDashboardView />}
+        {activeView === 'tienda' && <StoreDashboardView seccion="resumen" />}
+        {activeView === 'tienda_inventario' && <StoreDashboardView seccion="inventario" />}
+        {activeView === 'tienda_pedidos' && <StoreDashboardView seccion="pedidos" />}
         {activeView === 'admin' && <AdminDashboardView />}
         {activeView === 'mcp_console' && <MCPConsoleView />}
       </main>
@@ -58,6 +61,7 @@ const AppContent: React.FC = () => {
       <CheckoutModal />
       <AIAssistantWidget />
       <RegisterStoreModal />
+      <LoginModal />
       <CreateProductModal />
       <PriceAlertEdgeWidget />
 
